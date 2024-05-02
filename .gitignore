@@ -1,0 +1,4 @@
+.vscode/
+
+#AUTH SERVICE GIT IGNORE
+!auth-service/.gitignore

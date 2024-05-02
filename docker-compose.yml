@@ -1,0 +1,57 @@
+version: "3.8"
+services:
+
+  auth_db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: bookstore
+      POSTGRES_DB: bookstore
+    ports:
+      - "5432:5432"
+    networks:
+      - bookstore
+    volumes:
+      - auth_data:/var/lib/postgresql/data
+
+  book_db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: bookstore
+      POSTGRES_DB: bookstore
+    ports:
+      - "5433:5432"
+    networks:
+      - bookstore
+    volumes:
+      - book_data:/var/lib/postgresql/data
+
+  book_cache:
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - bookstore
+
+  
+     
+#  auth:
+#    build: 
+#      context: ./auth-service
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8081:8080"
+#    networks:
+#      - bookstore
+#    depends_on:
+#      - auth_db
+
+volumes:
+  auth_data:
+  book_data:
+
+networks:
+  bookstore:
+    driver: bridge
