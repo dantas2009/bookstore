@@ -1,0 +1,54 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model books {
+  id           Int           @id @default(autoincrement())
+  title        String
+  author       String
+  publisher    String
+  published_at DateTime
+  description  String
+  isbn         String
+  price        Float
+  discount     Float
+  language     String
+  image        String
+  sales_amount Int
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+  active       Boolean       @default(true)
+  inventories  inventories[]
+  booksgenres  booksgenres[]
+}
+
+model genres {
+  id          Int           @id @default(autoincrement())
+  genre       String
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  active      Boolean       @default(true)
+  booksgenres booksgenres[]
+}
+
+model inventories {
+  id       Int   @id @default(autoincrement())
+  id_book  Int
+  quantity Int
+  books    books @relation(fields: [id_book], references: [id])
+}
+
+model booksgenres {
+  id       Int @id @default(autoincrement())
+  id_book  Int
+  id_genre Int
+
+  book  books  @relation(fields: [id_book], references: [id])
+  genre genres @relation(fields: [id_genre], references: [id])
+}
