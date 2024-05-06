@@ -3,6 +3,8 @@
 #AUTH SERVICE GIT IGNORE
 !auth-service/.gitignore
 
-
 #BOOK SERVICE GIT IGNORE
 !book-service/.gitignore
+
+#CUSTOMER SERVICE GIT IGNORE
+!customer-service/.gitignore
