@@ -25,8 +25,10 @@ public class AuthCode {
     @GeneratedValue
     public Integer id;
   
+    @Column
     public String code;
   
+    @Column
     public Date expire_at;
 
     @Column(columnDefinition = "boolean default false")

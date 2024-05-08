@@ -12,12 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dantas2009.bookstore.auth.request.AuthenticationCodeRequest;
 import com.dantas2009.bookstore.auth.request.EmailRequest;
 import com.dantas2009.bookstore.auth.response.AuthenticationResponse;
-import com.dantas2009.bookstore.auth.response.AuthenticationUserResponse;
-
-import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
@@ -35,10 +32,7 @@ public class AuthenticationController {
     return ResponseEntity.ok(service.authenticatCode(httpRequest, request));
   }
 
-  @GetMapping("/user")
-  public ResponseEntity<AuthenticationUserResponse> getUserByToken(HttpServletRequest httpRequest) {
-    return ResponseEntity.ok(service.getUserByToken(httpRequest));
-  }
+
 
   @PostMapping("/refresh-token")
   public ResponseEntity<AuthenticationResponse> refreshToken(HttpServletRequest httpRequest) {

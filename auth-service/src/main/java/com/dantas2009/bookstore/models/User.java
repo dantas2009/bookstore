@@ -29,6 +29,9 @@ public class User implements UserDetails {
     @GeneratedValue
     private Integer id;
 
+    @Column(name = "id_customer")
+    private Integer idCustomer;
+
     @Column(unique = true)
     private String email;
 

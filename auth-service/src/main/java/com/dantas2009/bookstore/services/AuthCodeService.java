@@ -26,7 +26,8 @@ public class AuthCodeService {
                 .build();
     }
 
+    private final Random random = new Random();
     private String randomCode() {
-        return String.format("%06d", new Random().nextInt(1000000));
+        return String.format("%06d", random.nextInt(1000000));
     }
 }

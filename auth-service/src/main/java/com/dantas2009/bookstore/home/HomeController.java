@@ -5,10 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dantas2009.bookstore.models.Home;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -16,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class HomeController {
 
     @GetMapping("")
-    public ResponseEntity bookstore() {
+    public ResponseEntity<Home> bookstore() {
         return ResponseEntity.ok(new Home("bookstore"));
     }
 }

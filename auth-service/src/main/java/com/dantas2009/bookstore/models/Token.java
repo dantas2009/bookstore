@@ -25,11 +25,13 @@ public class Token {
   @GeneratedValue
   public Integer id;
 
-  @Column(unique = true)
-  public String token;
+  @Column(name = "access_token", unique = true)
+  public String accessToken;
 
+  @Column
   public boolean expired;
 
+  @Column
   public boolean revoked;
 
   @ManyToOne(fetch = FetchType.LAZY)

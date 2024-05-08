@@ -3,7 +3,6 @@ package com.dantas2009.bookstore.auth;
 import com.dantas2009.bookstore.auth.request.AuthenticationCodeRequest;
 import com.dantas2009.bookstore.auth.request.EmailRequest;
 import com.dantas2009.bookstore.auth.response.AuthenticationResponse;
-import com.dantas2009.bookstore.auth.response.AuthenticationUserResponse;
 import com.dantas2009.bookstore.models.Device;
 import com.dantas2009.bookstore.models.Token;
 import com.dantas2009.bookstore.models.User;
@@ -82,7 +81,7 @@ public class AuthenticationService {
     var token = Token.builder()
         .user(user)
         .device(device)
-        .token(jwtToken)
+        .accessToken(jwtToken)
         .expired(false)
         .revoked(false)
         .build();
@@ -114,29 +113,6 @@ public class AuthenticationService {
       }
     }
     throw new NoSuchElementException("Invalid refresh token");
-  }
-
-  public AuthenticationUserResponse getUserByToken(HttpServletRequest httpRequest) {
-    final String authHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
-    final String accessToken;
-    final String userEmail;
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-      throw new NoSuchElementException("Invalid token");
-    }
-
-    accessToken = authHeader.substring(7);
-    userEmail = jwtService.extractUsername(accessToken);
-    if (userEmail != null) {
-      var user = this.userRepository.findByEmail(userEmail).orElseThrow();
-
-      if (jwtService.isTokenValid(accessToken, user)) {
-        return AuthenticationUserResponse.builder()
-            .id_user(user.getId())
-            .email(user.getEmail())
-            .build();
-      }
-    }
-    throw new NoSuchElementException("Invalid token");
   }
 
   private void revokeAllAuthCode(User user) {

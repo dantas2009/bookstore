@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationUserResponse {
+public class AuthenticationCustomerResponse {
 
-  @JsonProperty("id_user")
-  private int id_user;
+  @JsonProperty("id_customer")
+  private Integer id_customer;
   @JsonProperty("email")
   private String email;
 }

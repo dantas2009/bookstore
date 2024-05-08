@@ -24,18 +24,24 @@ public class Device {
   @GeneratedValue
   public Integer id;
 
+  @Column
   public String device_name;
 
+  @Column
   public String device_os;
 
+  @Column
   public String browser;
 
+  @Column
   public String ip_address;
 
   @Nullable
+  @Column
   public String latitude;
 
   @Nullable
+  @Column
   public String longitude;
 
   @Column(columnDefinition = "boolean default false")
