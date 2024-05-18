@@ -27,22 +27,18 @@ class BookRepository {
             return null;
         }
 
-        const totalInventory = book.inventories.reduce((accumulator, inventory) => accumulator + inventory.quantity, 0);
-
-        if (book.sales_amount >= totalInventory) {
-            return null;
-        }
-
-        return book;
+        return await this.processBook(book);
     }
 
     async getTotalCount() {
-        return await prisma.books.count();
+        return await prisma.books.count({
+            where: { active: true },
+        });
     }
 
     async search(page: number, pageSize: number, term: string, orderBy: OrderBy | undefined) {
         term = term.toLowerCase();
-        return await prisma.books.findMany({
+        const books = await prisma.books.findMany({
             skip: (page - 1) * pageSize,
             take: pageSize,
             where: {
@@ -103,11 +99,17 @@ class BookRepository {
                     },
                 ],
             },
+            include: {
+                inventories: true,
+            },
             orderBy: this.getOrderBy(orderBy),
         });
+
+        return await Promise.all(books.map(this.processBook));
     }
 
     async getTotalCountSearch(term: string) {
+        term = term.toLowerCase();
         return await prisma.books.count({
             where: {
                 AND: [
@@ -171,7 +173,7 @@ class BookRepository {
     }
 
     async findByGenre(page: number, pageSize: number, genre: string, orderBy: OrderBy | undefined) {
-        return await prisma.books.findMany({
+        const books = await prisma.books.findMany({
             skip: (page - 1) * pageSize,
             take: pageSize,
             where: {
@@ -191,8 +193,13 @@ class BookRepository {
                     },
                 ],
             },
+            include: {
+                inventories: true,
+            },
             orderBy: this.getOrderBy(orderBy),
         });
+
+        return await Promise.all(books.map(this.processBook));
     }
 
     async getTotalCountByGenre(genre: string) {
@@ -218,24 +225,49 @@ class BookRepository {
     }
 
     async bestSellers(page: number, pageSize: number) {
-
-        return await prisma.books.findMany({
+        const books = await prisma.books.findMany({
             skip: (page - 1) * pageSize,
             take: pageSize,
             where: { active: true },
+            include: { inventories: true },
             orderBy: { sales_amount: 'desc' },
         });
+
+        return await Promise.all(books.map(this.processBook));
     }
 
     async releases(page: number, pageSize: number) {
-        return await prisma.books.findMany({
+        const books =  await prisma.books.findMany({
             skip: (page - 1) * pageSize,
             take: pageSize,
             where: { active: true },
+            include: { inventories: true },
             orderBy: { published_at: 'desc' },
         });
+
+        return await Promise.all(books.map(this.processBook));
     }
 
+    private async processBook(book: any) {
+        if (book === null) {
+            return null;
+        }
+    
+        let totalInventory = book.inventories.reduce((accumulator: number, inventory: { quantity: number }) => {
+            return accumulator + inventory.quantity;
+        }, 0);
+
+        totalInventory = totalInventory - book.sales_amount;
+    
+        const { sales_amount, inventories, ...bookWithoutSalesAmount } = book;
+        const bookWithInventory = {
+            ...bookWithoutSalesAmount,
+            inventory: totalInventory,
+        };
+    
+        return bookWithInventory;
+    }
+    
     private getOrderBy(orderBy: OrderBy | undefined) {
         let response = {};
         if (!orderBy) {

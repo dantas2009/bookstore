@@ -1,15 +1,12 @@
 import express from 'express';
 import BookController from './BookController';
 
-const router = express.Router();
-
 const bookController = new BookController();
 
-router.get('/genres', bookController.genres);
-router.get('/id/:id', bookController.findById);
-router.get('/search', bookController.search);
-router.get('/genre/:genre', bookController.findByGenre);
-router.get('/best-sellers', bookController.bestSellers);
-router.get('/releases', bookController.releases);
-
-export default router;
+export const routeBookV1 = express.Router();
+routeBookV1.get('/genres', bookController.genres);
+routeBookV1.get('/id/:id', bookController.findById);
+routeBookV1.get('/search', bookController.search);
+routeBookV1.get('/genre/:genre', bookController.findByGenre);
+routeBookV1.get('/best-sellers', bookController.bestSellers);
+routeBookV1.get('/releases', bookController.releases);
