@@ -47,16 +47,35 @@ services:
     networks:
       - bookstore
 
+  order_db:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    networks:
+      - bookstore
+
   auth:
     build: 
       context: ./auth-service
       dockerfile: Dockerfile
     ports:
-      - "8081:8080"
+      - "8081:8081"
     networks:
       - bookstore
     depends_on:
       - auth_db
+
+  customer:
+    build:
+      context: ./customer-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    working_dir: /var/www/html
+    networks:
+      - bookstore
+    depends_on:
+      - customer_db
 
   customer_server:
     image: 'nginx:latest'
@@ -69,17 +88,6 @@ services:
       - customer
     networks: 
         - bookstore
-    
-  customer:
-    build:
-      context: ./customer-service
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    working_dir: /var/www/html
-    networks:
-      - bookstore
-    depends_on:
-      - customer_db
 
   book:
     build:
@@ -99,10 +107,24 @@ services:
       REDIS_HOST: book_cache
       REDIS_PORT: 6379
 
+  order:
+    build: 
+      context: ./order-service
+      dockerfile: Dockerfile
+    environment:
+      - GIN_MODE=release
+    ports:
+      - "8084:8084"
+    depends_on:
+      - order_db
+    networks:
+      - bookstore
+
 volumes:
   auth_data:
   book_data:
   customer_data:
+  order_data:
 
 networks:
   bookstore:
