@@ -27,7 +27,7 @@ The above modes maps to the project development lifecycle as specified in each m
 
 The architecture is designed around the principles of microservices, aiming to create a scalable, resilient, and maintainable system. Each microservice is responsible for a specific domain within the application, enabling independent development, deployment, and scaling of individual components.
 
-![architecture](etc/architecture.png)
+![architecture](etc/architecture-v2.png)
 
 ## Production Infrastructure
 
