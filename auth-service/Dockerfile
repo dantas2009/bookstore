@@ -1,5 +1,24 @@
-FROM maven:3.8.5-openjdk-17 AS build
+# Estágio de construção
+FROM maven:3.8.5-openjdk-17 AS builder
 
-COPY target/auth-service-0.0.2.jar auth-service-0.0.2.jar
+# Definir o diretório de trabalho dentro do container
+WORKDIR /app
 
-ENTRYPOINT ["java","-jar","/auth-service-0.0.2.jar"]
+# Copiar o arquivo pom.xml e a pasta src para o diretório de trabalho
+COPY pom.xml .
+COPY src ./src
+
+# Executar o Maven para compilar o projeto e criar o pacote
+RUN mvn clean package
+
+# Estágio de execução
+FROM openjdk:17-jdk-alpine
+
+# Definir o diretório de trabalho dentro do container
+WORKDIR /app
+
+# Copiar o jar do estágio de construção para o diretório de trabalho do container
+COPY --from=builder /app/target/auth-*.jar ./auth.jar
+
+# Definir o entrypoint para executar a aplicação
+ENTRYPOINT ["java", "-jar", "auth.jar"]
