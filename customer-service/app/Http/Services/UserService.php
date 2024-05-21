@@ -7,26 +7,46 @@ use GuzzleHttp\Client;
 
 class UserService
 {
-    public function fetchUserIdByToken($request)
+    public function fetchUserByToken($token)
     {
-        if ($request->hasHeader('Authorization')) {
-            $authorizationHeader = $request->header('Authorization');
-            try {
-                $client = new Client();
-                $response = $client->request('GET', 'http://auth:8080/auth/user', [
-                    'headers' => [
-                        'Authorization' => $authorizationHeader,
-                        'Accept' => 'application/json',
-                    ]
-                ]);
+        try {
+            $client = new Client();
+            $response = $client->request('GET', 'http://auth:8081/api/v1/user/customer', [
+                'headers' => [
+                    'Authorization' => $token,
+                    'Accept' => 'application/json',
+                ]
+            ]);
 
-                $user = json_decode($response->getBody(), true);
+            $user = json_decode($response->getBody(), true);
 
-                return $user['id_user'] ?? null;
-            } catch (Exception $e) {
-                return null;
-            }
+            return $user ?? null;
+        } catch (Exception $e) {
+            return null;
         }
+
+        return null;
+    }
+
+    public function setCustomerId($token, $id_customer)
+    {
+        try {
+            $client = new Client();
+            $response = $client->request('PUT', 'http://auth:8081/api/v1/user/customer', [
+                'headers' => [
+                    'Authorization' => $token,
+                    'Accept' => 'application/json',
+                ],
+                'body' => json_encode(['id_customer' => $id_customer])
+            ]);
+
+            $user = json_decode($response->getBody(), true);
+
+            return $user ?? null;
+        } catch (Exception $e) {
+            return null;
+        }
+
         return null;
     }
 }

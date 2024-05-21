@@ -11,10 +11,16 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/customer/{id}', [CustomerController::class, 'show']);
-Route::post('/customer', [CustomerController::class, 'store']);
-Route::put('/customer/{id}', [CustomerController::class, 'update']);
-
-Route::get('/customer/address/{id}', [CustomerAddressController::class, 'show']);
-Route::post('/customer/address', [CustomerAddressController::class, 'store']);
-Route::put('/customer/address/{id}', [CustomerAddressController::class, 'update']);
+Route::prefix('/api/v1')->group(function () {
+    Route::prefix('/customers')->group(function () {
+        Route::get('/', [CustomerController::class, 'show']);
+        Route::post('/', [CustomerController::class, 'store']);
+        Route::put('/', [CustomerController::class, 'update']);
+        Route::prefix('/address')->group(function () {
+            Route::get('/', [CustomerAddressController::class, 'index']);
+            Route::get('/{id}', [CustomerAddressController::class, 'show']);
+            Route::post('/', [CustomerAddressController::class, 'store']);
+            Route::put('/{id}', [CustomerAddressController::class, 'update']);
+        });
+    });
+});

@@ -6,20 +6,26 @@ use App\Models\CustomerAddress;
 
 class CustomerAddressService
 {
-    public function getCustomerAddressById($id)
+    public function getCustomerAddressById($id, $id_customer)
     {
-        return CustomerAddress::findOrFail($id);
+        return CustomerAddress::where('id', $id)->where('id_customer', $id_customer)->first();
     }
 
-    public function createCustomerAddress($data)
+    public function createCustomerAddress($data, $id_customer)
     {
+        $data['id_customer'] = $id_customer;
         return CustomerAddress::create($data);
     }
 
-    public function updateCustomerAddress($data, $id)
+    public function updateCustomerAddress($data, $id, $id_customer)
     {
-        $customerAddress = CustomerAddress::findOrFail($id);
+        $customerAddress = CustomerAddress::where('id', $id)->where('id_customer', $id_customer)->first();
         $customerAddress->update($data);
         return $customerAddress;
+    }
+
+    public function getAllCustomerAddresses($id_customer)
+    {
+        return CustomerAddress::where('id_customer', $id_customer)->get();
     }
 }

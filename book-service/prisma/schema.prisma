@@ -20,7 +20,7 @@ model books {
   discount     Float
   language     String
   image        String
-  sales_amount Int
+  sales_amount Int           @default(0)
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
   active       Boolean       @default(true)

@@ -7,7 +7,6 @@ use App\Repositories\CustomerRepository;
 
 class CustomerService
 {
-
     public function getCustomerById($id)
     {
         return Customer::findOrFail($id);
