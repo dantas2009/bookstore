@@ -8,3 +8,9 @@
 
 #CUSTOMER SERVICE GIT IGNORE
 !customer-service/.gitignore
+
+#ORDER SERVICE GIT IGNORE
+!order-service/.gitignore
+
+#EMAIL BOT GIT IGNORE
+!email-bot/.gitignore
