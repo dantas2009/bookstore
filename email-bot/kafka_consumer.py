@@ -5,7 +5,7 @@ from confluent_kafka import Consumer, KafkaException, KafkaError
 def create_consumer():
     broker = os.getenv('KAFKA_BROKER')
     group_id = os.getenv('KAFKA_GROUP_ID')
-    topic = os.getenv('KAFKA_TOPIC')
+    topics = os.getenv('KAFKA_TOPICS').split(',')
 
     conf = {
         'bootstrap.servers': broker,
@@ -14,8 +14,7 @@ def create_consumer():
     }
 
     consumer = Consumer(conf)
-    consumer.subscribe([topic])
-
+    consumer.subscribe(topics)
     return consumer
 
 def consume_messages(consumer, process_message):
@@ -31,11 +30,13 @@ def consume_messages(consumer, process_message):
                 elif msg.error():
                     raise KafkaException(msg.error())
             else:
-                print(f"Received message: {msg.value().decode('utf-8')}")
-                process_message(msg.value().decode('utf-8'))
+                message = msg.value().decode('utf-8')
+                topic = msg.topic()
+                process_message(message, topic)
         except KafkaException as e:
             print(f"Kafka error: {e}")
-            time.sleep(5) 
+            consumer.close()
+            consumer = create_consumer()
         except Exception as e:
             print(f"Unexpected error: {e}")
             break

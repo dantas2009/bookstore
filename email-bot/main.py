@@ -1,11 +1,16 @@
 import json
 from kafka_consumer import create_consumer, consume_messages
-from send_email import send_email
+from send_email import send_auth_code_email, send_example_email
 
-def process_message(message):
+def process_message(message, topic):
     try:
         email_content = json.loads(message)
-        send_email(email_content)
+        if topic == 'auth-code':
+            send_auth_code_email(email_content)
+        elif topic == 'exemple_topic':
+            send_example_email(email_content)
+        else:
+            print(f"Unknown topic: {topic}")
     except json.JSONDecodeError as e:
         print(f"Error parsing JSON: {e}")
     except Exception as e:
