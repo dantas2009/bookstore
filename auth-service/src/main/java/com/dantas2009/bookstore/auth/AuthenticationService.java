@@ -6,12 +6,16 @@ import com.dantas2009.bookstore.models.AuthCode;
 import com.dantas2009.bookstore.models.Device;
 import com.dantas2009.bookstore.models.Token;
 import com.dantas2009.bookstore.models.User;
+import com.dantas2009.bookstore.queue.kafka.producer.AuthProducer;
+import com.dantas2009.bookstore.queue.kafka.producer.SendAuthCode;
 import com.dantas2009.bookstore.repositories.AuthCodeRepository;
 import com.dantas2009.bookstore.repositories.DeviceRepository;
 import com.dantas2009.bookstore.repositories.TokenRepository;
 import com.dantas2009.bookstore.repositories.UserRepository;
 import com.dantas2009.bookstore.services.AuthCodeService;
 import com.dantas2009.bookstore.services.JwtService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,12 +33,19 @@ public class AuthenticationService {
   private final DeviceRepository deviceRepository;
   private final JwtService jwtService;
   private final AuthCodeService authCodeService;
+  private final AuthProducer producer;
+  private ObjectMapper objectMapper = new ObjectMapper();
 
-  public AuthenticationCodeResponse emailRequest(User user, Device device) {
+  public AuthenticationCodeResponse emailRequest(User user, Device device) throws JsonProcessingException {
     revokeAllAuthCode(user);
     var authCode = authCodeService.generateCode(user, device);
 
     authCodeRepository.save(authCode);
+
+    var sendAuthCode = new SendAuthCode(authCode.getCode(), user.getEmail());
+    String authCodeJson = objectMapper.writeValueAsString(sendAuthCode);
+
+    producer.sendCode(authCode.getId().toString(), authCodeJson);
 
     return AuthenticationCodeResponse.builder()
         .code(authCode.getCode())

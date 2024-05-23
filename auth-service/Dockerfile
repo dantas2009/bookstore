@@ -9,7 +9,7 @@ COPY pom.xml .
 COPY src ./src
 
 # Executar o Maven para compilar o projeto e criar o pacote
-RUN mvn clean package
+RUN mvn package
 
 # Estágio de execução
 FROM openjdk:17-jdk-alpine

@@ -32,18 +32,22 @@ public class AuthenticationController {
   @PostMapping("/login/email")
   public ResponseEntity<AuthenticationCodeResponse> loginEmail(HttpServletRequest httpRequest,
       @RequestBody EmailRequest request) {
-    var user = service.getOrSaveUserByEmail(request.getEmail());
+    try {
+      var user = service.getOrSaveUserByEmail(request.getEmail());
 
-    UserAgent userAgent = UserAgent.parseUserAgentString(httpRequest.getHeader("User-Agent"));
-    var device = service.getOrSaveDevice(Device.builder()
-        .user(user)
-        .device_name(userAgent.getOperatingSystem().getDeviceType().getName())
-        .device_os(userAgent.getOperatingSystem().getName())
-        .browser(userAgent.getBrowser().getName())
-        .ip_address(httpRequest.getRemoteAddr())
-        .build());
+      UserAgent userAgent = UserAgent.parseUserAgentString(httpRequest.getHeader("User-Agent"));
+      var device = service.getOrSaveDevice(Device.builder()
+          .user(user)
+          .device_name(userAgent.getOperatingSystem().getDeviceType().getName())
+          .device_os(userAgent.getOperatingSystem().getName())
+          .browser(userAgent.getBrowser().getName())
+          .ip_address(httpRequest.getRemoteAddr())
+          .build());
 
-    return ResponseEntity.ok(service.emailRequest(user, device));
+      return ResponseEntity.ok(service.emailRequest(user, device));
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().build();
+    }
   }
 
   @PostMapping("/login/code")
