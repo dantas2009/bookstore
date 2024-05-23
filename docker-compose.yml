@@ -146,6 +146,16 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
+#Bot
+  email_bot:
+    build:
+      context: ./email-bot
+      dockerfile: Dockerfile
+    depends_on:
+      - kafka
+    networks:
+      - bookstore
+
 volumes:
   auth_data:
   book_data:
