@@ -1,0 +1,45 @@
+
+server:
+    port: 8081
+
+spring:
+    application:
+        name: "auth-service"
+    datasource:
+        url: jdbc:postgresql://auth_db:5432/bookstore
+        #url: jdbc:postgresql://localhost:54321/bookstore
+        username: postgres
+        password: bookstore
+        driver-class-name: org.postgresql.Driver
+    jpa:
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                format_sql: true
+        show-sql: true
+        database: POSTGRESQL
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
+    kafka:
+        bootstrap-servers: kafka:29092
+        #bootstrap-servers: localhost:9092
+        consumer:
+            group-id: auth-service
+            auto-offset-reset: earliest
+            key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+bookstore:
+    kafka:
+        topic:
+            auth:
+                code: auth-code
+    security:
+        jwt:
+            secret: secret
+            expiration: 86400000
+            refresh-token:
+                expiration: 604800000
+        authcode:
+            expiration: 300000
+
