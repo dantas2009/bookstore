@@ -79,16 +79,12 @@ It is a wrapper bash scripts around __Docker Compose__.
 ## Technologies
 
 - Backend:
-  - JWT
-  - Java 17
-  - PHP 8
-  - Node 20
-  - Rust 1
-  - Spring Boot 3
-  - Laravel 10
-  - Express JS 4
-  - Rocket 0.5
-  - Swagger
+  - JWT (security)
+  - Java (springboot)
+  - PHP (laravel)
+  - Node (express js)
+  - GO (gin gonic)
+  - Postman (documentation)
 - Database:
   - Postgree
   - MongoDB
@@ -97,3 +93,5 @@ It is a wrapper bash scripts around __Docker Compose__.
   - Docker
   - Jenkins
   - Maven
+  - Kubernets
+  - AWS
