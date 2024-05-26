@@ -1,5 +1,20 @@
 services:
 
+#Gateway
+  gateway:
+    build: 
+      context: ./gateway-service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - bookstore
+    depends_on:
+      - auth
+      - book
+      - customer
+      - order
+
 #Auth
   auth_db:
     image: postgres
@@ -23,8 +38,8 @@ services:
     networks:
       - bookstore
     depends_on:
-      - auth_db
       - kafka
+      - auth_db
 
 #Customer
   customer_db:
@@ -111,6 +126,8 @@ services:
       - "27017:27017"
     networks:
       - bookstore
+    volumes:
+      - order_data:/data/db
 
   order:
     build: 

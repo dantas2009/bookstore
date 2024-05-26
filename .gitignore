@@ -1,5 +1,8 @@
 .vscode/
 
+#API GATEWAY GIT IGNORE
+!api-gateway/.gitignore
+
 #AUTH SERVICE GIT IGNORE
 !auth-service/.gitignore
 

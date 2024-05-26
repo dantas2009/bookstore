@@ -1,0 +1,65 @@
+server: 
+    port: 8080 
+
+spring:
+  application:
+        name: "auth-service"
+  cloud:
+    gateway:
+      routes:
+        - id: auth_service_route
+          uri: http://auth:8081
+          predicates:
+            - Path=/api/v1/auth/**
+        - id: auth_service_route
+          uri: http://auth:8081
+          predicates:
+            - Path=/api/v1/user/**
+          filters:
+            - name: AuthenticationFilter
+        - id: customer_service_route
+          uri: http://customer:8082
+          predicates:
+            - Path=/api/v1/customers/**
+          filters:
+            - name: AuthenticationFilter
+        - id: book_service_route
+          uri: http://book:8083
+          predicates:
+            - Path=/api/v1/book/**
+        - id: order_service_route
+          uri: http://order:8084
+          predicates:
+            - Path=/api/v1/favorites/**
+          filters:
+            - name: AuthenticationFilter
+        - id: order_service_route
+          uri: http://order:8084
+          predicates:
+            - Path=/api/v1/carts/**
+        - id: order_service_route
+          uri: http://order:8084
+          predicates:
+            - Path=/api/v1/orders/**
+          filters:
+            - name: AuthenticationFilter
+  datasource:
+    url: jdbc:postgresql://auth_db:5432/bookstore
+    #url: jdbc:postgresql://localhost:54321/bookstore
+    username: postgres
+    password: bookstore
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+    database: POSTGRESQL
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+application:
+    security:
+        jwt:
+            secret-key: secret
