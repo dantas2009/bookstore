@@ -9,23 +9,24 @@ datasource db {
 }
 
 model books {
-  id           Int           @id @default(autoincrement())
-  title        String
-  author       String
-  publisher    String
-  published_at DateTime
-  description  String
-  isbn         String
-  price        Float
-  discount     Float
-  language     String
-  image        String
-  sales_amount Int           @default(0)
-  created_at   DateTime      @default(now())
-  updated_at   DateTime      @updatedAt
-  active       Boolean       @default(true)
-  inventories  inventories[]
-  booksgenres  booksgenres[]
+  id              Int           @id @default(autoincrement())
+  title           String
+  author          String
+  publisher       String
+  published       DateTime
+  description     String
+  isbn            String
+  price           Float
+  discount        Float
+  effective_price Float
+  language        String
+  image           String
+  sales_amount    Int           @default(0)
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+  active          Boolean       @default(true)
+  inventories     inventories[]
+  booksgenres     booksgenres[]
 }
 
 model genres {

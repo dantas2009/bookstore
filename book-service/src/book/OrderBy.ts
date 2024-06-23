@@ -3,6 +3,6 @@ export enum OrderBy {
     PriceDesc = 'price_desc',
     TitleAsc = 'title_asc',
     TitleDesc = 'title_desc',
-    BestSellers = 'best_sellers',
-    PublisherDate = 'publisher_date',
+    Newest = 'newest',
+    Discount = 'discount',
   }

@@ -94,6 +94,24 @@ class BookController {
         }
     }
 
+    async worstSellers(req: Request, res: Response) {
+        const { page, pageSize } = req.query;
+        try {
+            const response = await bookService.worstSellers(
+                Number(page),
+                Number(pageSize)
+            );
+
+            if (!response) {
+                res.status(404).send();;
+            }
+
+            res.json(response);
+        } catch (error) {
+            res.status(500).send();
+        }
+    }
+
     async releases(req: Request, res: Response) {
         const { page, pageSize } = req.query;
         try {

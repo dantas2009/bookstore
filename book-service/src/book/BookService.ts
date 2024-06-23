@@ -138,6 +138,43 @@ class BookService {
         return response;
     }
 
+    async worstSellers(page: number, pageSize: number) {
+        const chaceKey = `worstsellers:${page}:${pageSize}`;
+        const cached = await cache.get(chaceKey);
+        if (cached) {
+            return JSON.parse(cached);
+        }
+
+        const books = await this.bookRepository.worstSellers(page, pageSize);
+        const totalCount = await this.bookRepository.getTotalCount();
+        const totalPages = Math.ceil(totalCount / pageSize);
+
+        const response = {
+            currentPage: page,
+            pageSize: pageSize,
+            totalCount: totalCount,
+            totalPages: totalPages,
+            pagination: {
+                previousPage: page > 1 ? page - 1 : null,
+                nextPage: page < totalPages ? page + 1 : null,
+                pages: Array.from({ length: totalPages }, (_, i) => i + 1),
+            },
+            data: books,
+        };
+
+        if(books.length === 0) {
+            return null;
+        }
+
+        await cache.set(
+            chaceKey,
+            JSON.stringify(response),
+            'EX',
+            parseInt(process.env.CACHE_TIMEOUT ?? '3600')
+        );
+        return response;
+    }
+
     async releases(page: number, pageSize: number) {
         const chaceKey = `releases:${page}:${pageSize}`;
         const cached = await cache.get(chaceKey);

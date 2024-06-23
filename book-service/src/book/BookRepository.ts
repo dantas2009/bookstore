@@ -20,6 +20,7 @@ class BookRepository {
             },
             include: {
                 inventories: true,
+                booksgenres: true,
             },
         });
 
@@ -101,6 +102,7 @@ class BookRepository {
             },
             include: {
                 inventories: true,
+                booksgenres: true,
             },
             orderBy: this.getOrderBy(orderBy),
         });
@@ -195,6 +197,7 @@ class BookRepository {
             },
             include: {
                 inventories: true,
+                booksgenres: true,
             },
             orderBy: this.getOrderBy(orderBy),
         });
@@ -229,8 +232,26 @@ class BookRepository {
             skip: (page - 1) * pageSize,
             take: pageSize,
             where: { active: true },
-            include: { inventories: true },
+            include: {
+                inventories: true,
+                booksgenres: true,
+            },
             orderBy: { sales_amount: 'desc' },
+        });
+
+        return await Promise.all(books.map(this.processBook));
+    }
+
+    async worstSellers(page: number, pageSize: number) {
+        const books = await prisma.books.findMany({
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+            where: { active: true },
+            include: {
+                inventories: true,
+                booksgenres: true,
+            },
+            orderBy: { sales_amount: 'asc' },
         });
 
         return await Promise.all(books.map(this.processBook));
@@ -241,8 +262,11 @@ class BookRepository {
             skip: (page - 1) * pageSize,
             take: pageSize,
             where: { active: true },
-            include: { inventories: true },
-            orderBy: { published_at: 'desc' },
+            include: {
+                inventories: true,
+                booksgenres: true,
+            },
+            orderBy: { published: 'desc' },
         });
 
         return await Promise.all(books.map(this.processBook));
@@ -275,17 +299,17 @@ class BookRepository {
         };
 
         if (orderBy === OrderBy.PriceAsc) {
-            response = { price: 'asc' }
+            response = { effective_price: 'asc' }
         } else if (orderBy === OrderBy.PriceDesc) {
-            response = { price: 'desc' }
+            response = { effective_price: 'desc' }
         } else if (orderBy === OrderBy.TitleAsc) {
             response = { title: 'asc' }
         } else if (orderBy === OrderBy.TitleDesc) {
             response = { title: 'desc' }
-        } else if (orderBy === OrderBy.BestSellers) {
-            response = { sales_amout: 'desc' }
-        } else if (orderBy === OrderBy.PublisherDate) {
-            response = { publisher_date: 'desc' }
+        } else if (orderBy === OrderBy.Newest) {
+            response = { created_at: 'desc' }
+        } else if (orderBy === OrderBy.Discount) {
+            response = { discount: 'desc' }
         }
 
         return response;
